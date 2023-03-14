@@ -1,0 +1,41 @@
+﻿@model IEnumerable<Employee>
+
+<div class="m-2">
+    <h4 class="bg-primary text-white text-center p-2">Employees</h4>
+    <table class="table table-sm table-bordered table-striped">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>FirstName</th>
+                <th>LastName</th>
+                <th>Surname</th>
+                <th>BirthDay</th>
+                <th>Department</th>
+                <th>Description</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (Employee employee in Model)
+            {
+                <tr>
+                    <td>@employee.Id</td>
+                    <td>@employee.FirstName</td>
+                    <td>@employee.LastName</td>
+                    <td>@employee.Surname</td>
+                    <td>@employee.BirthDay</td>
+                    <td>@employee.Department.Name</td>
+                    <td>@employee.Description</td>
+                    <td class="text-center">
+                        <a asp-action="Details" asp-route-id="@employee.Id" class="btn btn-sm btn-info">Details</a>
+                        <a asp-action="Edit" asp-route-id="@employee.Id" class="btn btn-sm btn-warning">Edit</a>
+                        <a asp-action="Delete" asp-route-id="@employee.Id" class="btn btn-sm btn-danger">Delete</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    <a asp-action="Create" class="btn btn-primary">Create</a>
+    @*<a asp-page="DepartmentList" class="btn btn-primary">Departments</a>*@
+    <a asp-page="/Index" class="btn btn-primary float-end">Page View</a>
+</div>

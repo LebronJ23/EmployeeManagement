@@ -1,4 +1,6 @@
 using EmployeeManagement.Models;
+using EmployeeManagement.Models.Infrastructure.Interfaces;
+using EmployeeManagement.Models.Infrastructure.Repositories;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -31,6 +33,7 @@ namespace EmployeeManagement
                 opts.UseSqlServer(Configuration["ConnectionStrings:EmployeeConnection"]);
                 opts.EnableSensitiveDataLogging(true);
             });
+            services.AddScoped<IDataRepository, DataRepository>();
             services.AddControllersWithViews().AddRazorRuntimeCompilation();
             services.AddRazorPages().AddRazorRuntimeCompilation();
         }

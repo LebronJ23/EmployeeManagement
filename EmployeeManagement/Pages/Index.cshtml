@@ -38,23 +38,24 @@
     </table>
     <a asp-page="Create" class="btn btn-primary">Create</a>
     <a asp-page="DepartmentList" class="btn btn-primary">Departments</a>
+    <a asp-controller="Home" asp-action="Index" class="btn btn-primary float-end">MVC View</a>
 </div>
 
 @functions{
     public class IndexModel : PageModel
     {
-        private DataContext context;
+        private IDataRepository repository;
 
-        public IndexModel(DataContext dbContext)
+        public IndexModel(IDataRepository repo)
         {
-            context = dbContext;
+            repository = repo;
         }
 
         public IEnumerable<Employee> Employees { get; set; }
 
         public void OnGetAsync(long id = 1)
         {
-            Employees = context.Employees.Include(p => p.Department);
+            Employees = repository.Employees;
         }
     }
 }

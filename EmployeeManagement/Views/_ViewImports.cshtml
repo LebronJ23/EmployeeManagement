@@ -1,9 +1,11 @@
 ﻿@namespace EmployeeManagement.Pages
-@using EmployeeManagement.Models
-@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
-@addTagHelper *, WebApp
 @using Microsoft.AspNetCore.Mvc.RazorPages
 @using Microsoft.EntityFrameworkCore
 @using EmployeeManagement.Pages
+@using EmployeeManagement.Models
+@using EmployeeManagement.Models.Infrastructure.Factories;
+@using EmployeeManagement.Models.Infrastructure.Interfaces;
+@using EmployeeManagement.Models.ViewModels;
 @using System.Text.Json
 @using Microsoft.AspNetCore.Http
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers

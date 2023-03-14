@@ -1,0 +1,82 @@
+﻿@model EmployeeViewModel
+
+<partial name="_DatePicker" />
+
+<h3 class="bg-@Model.Theme text-white text-center p-2">
+    @Model.Action
+</h3>
+
+<form asp-action="@Model.Action" method="post">
+
+    <div class="form-group">
+        <label asp-for="Employee.Id"></label>
+        <input class="form-control" asp-for="Employee.Id" readonly />
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Employee.FirstName"></label>
+        <div>
+            <span asp-validation-for="Employee.FirstName" class="text-danger"></span>
+        </div>
+        <input class="form-control" asp-for="Employee.FirstName" readonly="@Model.ReadOnly" />
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Employee.LastName"></label>
+        <div>
+            <span asp-validation-for="Employee.LastName" class="text-danger"></span>
+        </div>
+        <input class="form-control" asp-for="Employee.LastName" readonly="@Model.ReadOnly" />
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Employee.Surname"></label>
+        <div>
+            <span asp-validation-for="Employee.Surname" class="text-danger"></span>
+        </div>
+        <input class="form-control" asp-for="Employee.Surname" readonly="@Model.ReadOnly" />
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Employee.BirthDay"></label>
+        <div>
+            <span asp-validation-for="Employee.BirthDay" class="text-danger"></span>
+        </div>
+        <input class="form-control" asp-for="Employee.BirthDay" readonly="@Model.ReadOnly" /> @*id="datepicker" type="text" value="@DateTime.Now.ToString("MM/dd/yyyy")"*@
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Employee.DepartmentId">
+            Department
+            @if (!Model.ReadOnly)
+            {
+                <input type="hidden" name="returnPage" value="@Model.Action" />
+                <button class="btn btn-sm btn-outline-primary ml-3" asp-page="/DepartmentCreateView" formmethod="get" formnovalidate>
+                    Create New Department
+                </button>
+            }
+        </label>
+        <div>
+            <span asp-validation-for="Employee.DepartmentId" class="text-danger"></span>
+        </div>
+        <select asp-for="Employee.DepartmentId" class="form-control" disabled="@Model.ReadOnly"
+                asp-items="@(new SelectList(Model.Departments, "Id", "Name"))">
+            <option value="" disabled selected>Choose a Department</option>
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Employee.Description"></label>
+        <div>
+            <span asp-validation-for="Employee.Description" class="text-danger"></span>
+        </div>
+        <textarea class="form-control" asp-for="Employee.Description" readonly="@Model.ReadOnly">
+        </textarea>
+    </div>
+
+    @if (Model.ShowAction)
+    {
+        <button class="btn btn-@Model.Theme" type="submit">@Model.Action</button>
+    }
+    <a class="btn btn-secondary" asp-controller="Home" asp-action="Index">Back</a>
+</form>
