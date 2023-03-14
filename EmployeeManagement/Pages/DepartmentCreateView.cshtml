@@ -1,0 +1,69 @@
+﻿@page "/pages/department"
+@model DepartmentCreateModel
+
+<div class="m-2">
+    <h5 class="bg-secondary text-white text-center p-2">Create New Department</h5>
+    
+    <form asp-page="DepartmentCreateView" method="post">
+        <div class="form-group">
+            <label asp-for="Department.Name"></label>
+            <input class="form-control" asp-for="Department.Name" />
+        </div>
+
+        <div class="form-group">
+            <label asp-for="Department.City"></label>
+            <input class="form-control" asp-for="Department.City" />
+        </div>
+
+        <button class="btn btn-primary" type="submit">Create</button>
+        <a class="btn btn-outline-primary" asp-page="@Model.ReturnPage" asp-route-id="@Model.EmployeeId">
+            Cancel
+        </a>
+    </form>
+
+</div>
+
+@functions {
+
+    public class DepartmentCreateModel : PageModel
+    {
+        private DataContext Context;
+
+        public DepartmentCreateModel(DataContext dbContext)
+        {
+            Context = dbContext;
+        }
+
+        [BindProperty]
+        public Department Department { get; set; }
+
+        public string ReturnPage { get; set; }
+        public string EmployeeId { get; set; }
+
+        public void OnGet([FromQuery(Name = "Employee")] Employee employee, string returnPage)
+        {
+            TempData["employee"] = Serialize(employee);
+            TempData["returnAction"] = ReturnPage = returnPage;
+            TempData["employeeId"] = EmployeeId = employee.Id.ToString();
+        }
+
+        public async Task<IActionResult> OnPostAsync()
+        {
+            Context.Departments.Add(Department);
+            await Context.SaveChangesAsync();
+
+            Employee employee = Deserialize(TempData["employee"] as string);
+            employee.DepartmentId = Department.Id;
+
+            TempData["employee"] = Serialize(employee);
+
+            return RedirectToPage(
+                TempData["returnAction"] as string,
+                new { id = TempData["employeeId"] as string }
+            );
+        }
+
+        private string Serialize(Employee e) => JsonSerializer.Serialize(e);
+        private Employee Deserialize(string json) => JsonSerializer.Deserialize<Employee>(json);
+    }
+}

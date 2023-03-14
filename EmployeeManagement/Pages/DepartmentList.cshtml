@@ -1,0 +1,81 @@
+﻿@page "/pages/departments"
+@model DepartmentListModel
+
+<div class="m-2">
+    <h3 class="bg-primary text-white text-center p-2">Departments</h3>
+    <table class="table table-sm table-bordered table-striped">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Name</th>
+                <th>City</th>
+                <th>Staff</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model.Departments.Count() == 0)
+            {
+                <tr>
+                    <td colspan="4" class="text-center">
+                        No Departmnets
+                    </td>
+                </tr>
+            }
+            else
+            {
+                foreach (var department in Model.Departments)
+                {
+                    <tr>
+                        <td>@department.Id</td>
+                        <td>@department.Name</td>
+                        <td>@department.City</td>
+                        <td>@Model.GetStaff(department)</td>
+                        <td>
+                            <form asp-page="DepartmentList" method="post">
+                                <input type="hidden" name="Id" value="@department.Id" />
+                                <a class="btn btn-sm btn-warning" asp-page="DepartmentEdit" asp-route-id="@department.Id">
+                                    Edit
+                                </a>
+                                <button type="submit" class="btn btn-sm btn-danger">
+                                    Delete
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
+    <a asp-page="DepartmentCreateView" asp-route-returnPage="DepartmentList" class="btn btn-primary">Create</a>
+    <a class="btn btn-secondary" asp-page="Index">Back</a>
+</div>
+
+@functions{
+    public class DepartmentListModel : PageModel
+    {
+        public DataContext dataContext;
+
+        public IEnumerable<Department> Departments;
+
+        public DepartmentListModel(DataContext ctx)
+        {
+            dataContext = ctx;
+        }
+
+        public string GetStaff(Department department)
+        {
+            var employees = department.Employees.ToList();
+            string result = employees.Count == 0
+                ? "No staff" 
+                : string.Join(", ", employees.Take(3).Select(e => e.FirstName).ToArray());
+            return employees.Count > 3 ? $"{ result } ..." : result;
+        }
+
+        public void OnGetAsync()
+        {
+            Departments = dataContext.Departments.Include(d => d.Employees);
+        }
+
+    }
+}

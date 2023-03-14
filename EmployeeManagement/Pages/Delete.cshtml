@@ -1,0 +1,30 @@
+﻿@page "/pages/delete/{id}"
+@model DeleteModel
+
+<div class="m-2">
+    <partial name="_EmployeeEditForm" model="@Model.ViewModel" />
+</div>
+
+
+@functions {
+    public class DeleteModel : BaseManagementPageModel
+    {
+        public DeleteModel(DataContext context) : base(context)
+        {
+
+        }
+
+        public async Task OnGetAsync(long id)
+        {
+            Employee employee = await Context.Employees.FirstOrDefaultAsync(e => e.Id == id);
+            ViewModel = EmployeeViewModelFactory.Delete(employee, Departments);
+        }
+
+        public async Task<IActionResult> OnPostAsync([FromForm] Employee employee)
+        {
+            Context.Employees.Remove(employee);
+            await Context.SaveChangesAsync();
+            return RedirectToPage(nameof(Index));
+        }
+    }
+}

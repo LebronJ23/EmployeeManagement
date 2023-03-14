@@ -1,0 +1,43 @@
+﻿@page "/pages/create"
+@model CreateModel
+
+<div class="m-2">
+    <partial name="_EmployeeEditForm" model="@Model.ViewModel" />
+</div>
+
+@functions {
+    public class CreateModel : BaseManagementPageModel
+    {
+        public CreateModel(DataContext dataContext) : base(dataContext)
+        {
+
+        }
+
+        public void OnGet()
+        {
+            Employee employee = TempData.ContainsKey("employee")
+                ? JsonSerializer.Deserialize<Employee>(TempData["employee"] as string)
+                : new Employee();
+
+            ViewModel = EmployeeViewModelFactory.Create(employee, Departments);
+        }
+
+        public async Task<IActionResult> OnPostAsync([FromForm] Employee employee)
+        {
+            if (ModelState.IsValid)
+            {
+                employee.Id = default;
+                employee.Department = default;
+
+                Context.Employees.Add(employee);
+                await Context.SaveChangesAsync();
+
+                return RedirectToPage(nameof(Index));
+            }
+
+            ViewModel = EmployeeViewModelFactory.Create(employee, Departments);
+            return Page();
+        }
+    }
+
+}

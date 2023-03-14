@@ -1,0 +1,103 @@
+﻿@page
+@model DepartmentEditModel
+
+<h1 class="bg-primary text-white text-center p-2">Edit Department: @Model.Department.Name</h1>
+
+<form method="post">
+    <input type="hidden" name="departmentId" value="@Model.Department.Id" />
+    <h3 class ="bg-secondary text-white text-center p-2">Staff</h3>
+    <table class="table table-sm table-striped table-bordered">
+        <thead>
+            <tr>
+                <th>FirstName</th>
+                <th>LastName</th>
+                <th>SurName</th>
+                @*<th></th>*@
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model.Staff.Count() == 0)
+            {
+                <tr><td colspan="3" class="text-center">No staff</td></tr>
+            }
+            @foreach (Employee e in Model.Staff)
+            {
+                <tr>
+                    <td>@e.FirstName</td>
+                    <td>@e.LastName</td>
+                    <td>@e.Surname</td>
+                    @*<td>
+                        <button asp-route-userid="@e.Id" class="btn btn-primary btn-sm" type="submit">
+                            Change
+                        </button>
+                    </td>*@
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <h3 class="bg-secondary text-white text-center p-2">NotStaff</h3>
+    <table class="table table-sm table-striped table-bordered">
+        <thead>
+            <tr>
+                <th>FirstName</th>
+                <th>LastName</th>
+                <th>SurName</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model.NotStaff.Count() == 0)
+            {
+                <tr><td colspan="3" class="text-center">No staff</td></tr>
+            }
+            @foreach (Employee e in Model.NotStaff)
+            {
+                <tr>
+                    <td>@e.FirstName</td>
+                    <td>@e.LastName</td>
+                    <td>@e.Surname</td>
+                    <td>
+                        <button asp-route-employeeId="@e.Id" class="btn btn-primary btn-sm" type="submit">
+                            Change
+                        </button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</form>
+
+<a class="btn btn-secondary" asp-page="DepartmentList">Back</a>
+
+@functions{
+    public class DepartmentEditModel : PageModel
+    {
+        public DataContext dataContext;
+
+        public DepartmentEditModel(DataContext ctx)
+        {
+            dataContext = ctx;
+        }
+
+        public Department Department { get; set; }
+
+        public async Task OnGetAsync(long id)
+        {
+            Department = await dataContext.Departments.Include(d => d.Employees).FirstOrDefaultAsync(d => d.Id == id);
+        }
+
+        public IEnumerable<Employee> Employees => dataContext.Employees.ToList();
+        public IEnumerable<Employee> Staff => Department.Employees;
+        public IEnumerable<Employee> NotStaff => Employees.Except(Staff);
+
+        public async Task<IActionResult> OnPostAsync(long employeeId, long departmentId)
+        {
+            Employee employee = await dataContext.Employees.FindAsync(employeeId);
+            employee.DepartmentId = departmentId;
+
+            await dataContext.SaveChangesAsync();
+            return RedirectToPage(new { id = departmentId });
+        }
+    }
+}

@@ -1,0 +1,40 @@
+﻿@page "/pages/edit/{id:long}"
+@model EditModel
+
+<div class="m-2">
+    <partial name="_EmployeeEditForm" model="@Model.ViewModel" />
+</div>
+
+
+@functions {
+    public class EditModel : BaseManagementPageModel
+    {
+        public EditModel(DataContext context) : base(context)
+        {
+
+        }
+
+        public async Task OnGetAsync(long id)
+        {
+            Employee employee = TempData.ContainsKey("employee")
+                ? JsonSerializer.Deserialize<Employee>(TempData["employee"] as string)
+                : await Context.Employees.FindAsync(id);
+            ViewModel = EmployeeViewModelFactory.Edit(employee, Departments);
+        }
+
+        public async Task<IActionResult> OnPostAsync([FromForm] Employee employee)
+        {
+            if (ModelState.IsValid)
+            {
+                employee.Department = default;
+
+                Context.Employees.Update(employee);
+                await Context.SaveChangesAsync();
+
+                return RedirectToPage(nameof(Index));
+            }
+            ViewModel = EmployeeViewModelFactory.Edit(employee, Departments);
+            return Page();
+        }
+    }
+}

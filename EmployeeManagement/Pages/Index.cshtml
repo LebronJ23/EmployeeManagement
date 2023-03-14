@@ -1,0 +1,60 @@
+﻿@page "/pages/{id:long?}"
+@model IndexModel
+
+<div class="m-2">
+    <h4 class="bg-primary text-white text-center p-2">Employees</h4>
+    <table class="table table-sm table-bordered table-striped">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>FirstName</th>
+                <th>LastName</th>
+                <th>Surname</th>
+                <th>BirthDay</th>
+                <th>Department</th>
+                <th>Description</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (Employee employee in Model.Employees)
+            {
+                <tr>
+                    <td>@employee.Id</td>
+                    <td>@employee.FirstName</td>
+                    <td>@employee.LastName</td>
+                    <td>@employee.Surname</td>
+                    <td>@employee.BirthDay</td>
+                    <td>@employee.Department.Name</td>
+                    <td>@employee.Description</td>
+                    <td class="text-center">
+                        <a asp-page="Details" asp-route-id="@employee.Id" class="btn btn-sm btn-info">Details</a>
+                        <a asp-page="Edit" asp-route-id="@employee.Id" class="btn btn-sm btn-warning">Edit</a>
+                        <a asp-page="Delete" asp-route-id="@employee.Id" class="btn btn-sm btn-danger">Delete</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    <a asp-page="Create" class="btn btn-primary">Create</a>
+    <a asp-page="DepartmentList" class="btn btn-primary">Departments</a>
+</div>
+
+@functions{
+    public class IndexModel : PageModel
+    {
+        private DataContext context;
+
+        public IndexModel(DataContext dbContext)
+        {
+            context = dbContext;
+        }
+
+        public IEnumerable<Employee> Employees { get; set; }
+
+        public void OnGetAsync(long id = 1)
+        {
+            Employees = context.Employees.Include(p => p.Department);
+        }
+    }
+}
