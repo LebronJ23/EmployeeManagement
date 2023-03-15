@@ -9,21 +9,20 @@
 @functions {
     public class DeleteModel : BaseManagementPageModel
     {
-        public DeleteModel(DataContext context) : base(context)
+        public DeleteModel(IDataRepository repo) : base(repo)
         {
 
         }
 
         public async Task OnGetAsync(long id)
         {
-            Employee employee = await Context.Employees.FirstOrDefaultAsync(e => e.Id == id);
+            Employee employee = await Repository.Employees.FirstOrDefaultAsync(e => e.Id == id);
             ViewModel = EmployeeViewModelFactory.Delete(employee, Departments);
         }
 
         public async Task<IActionResult> OnPostAsync([FromForm] Employee employee)
         {
-            Context.Employees.Remove(employee);
-            await Context.SaveChangesAsync();
+            await Repository.DeleteEmployeeAsync(employee);
             return RedirectToPage(nameof(Index));
         }
     }

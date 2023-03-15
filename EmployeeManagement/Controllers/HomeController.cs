@@ -54,7 +54,7 @@ namespace EmployeeManagement.Controllers
 
         public async Task<IActionResult> Details(long id)
         {
-            Employee employee = await repository.Employees.FirstOrDefaultAsync(e => e.Id == id);
+            Employee employee = await repository.FindEmployeeByIdAsync(id);
 
             return View("EmployeeEditor", EmployeeViewModelFactory.Details(employee));
         }
@@ -63,7 +63,7 @@ namespace EmployeeManagement.Controllers
         {
             Employee employee = TempData.ContainsKey("employee")
                 ? JsonSerializer.Deserialize<Employee>(TempData["employee"] as string)
-                : await repository.Employees.FirstOrDefaultAsync(e => e.Id == id);
+                : await repository.FindEmployeeByIdAsync(id);
 
             return View("EmployeeEditor", EmployeeViewModelFactory.Edit(employee, Departments));
         }
@@ -85,7 +85,7 @@ namespace EmployeeManagement.Controllers
 
         public async Task<IActionResult> Delete(long id)
         {
-            Employee employee = await repository.Employees.FirstOrDefaultAsync(e => e.Id == id);
+            Employee employee = await repository.FindEmployeeByIdAsync(id);
             return View("EmployeeEditor", EmployeeViewModelFactory.Delete(employee, Departments));
         }
 

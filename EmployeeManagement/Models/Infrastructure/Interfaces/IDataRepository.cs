@@ -11,9 +11,12 @@ namespace EmployeeManagement.Models.Infrastructure.Interfaces
         void CreateEmployee(Employee e);
         void SaveEmployee(Employee e);
         void DeleteEmployee(Employee e);
+        Employee FindEmployeeById(long id);
 
         Task CreateEmployeeAsync(Employee e);
         Task SaveEmployeeAsync(Employee e);
         Task DeleteEmployeeAsync(Employee e);
+        Task<Employee> FindEmployeeByIdAsync(long id);
+
     }
 }

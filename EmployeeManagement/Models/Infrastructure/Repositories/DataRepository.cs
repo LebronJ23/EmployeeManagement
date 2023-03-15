@@ -42,6 +42,16 @@ namespace EmployeeManagement.Models.Infrastructure.Repositories
             await dataContext.SaveChangesAsync();
         }
 
+        public Employee FindEmployeeById(long id)
+        {
+            return dataContext.Employees.Find(id);
+        }
+
+        public async Task<Employee> FindEmployeeByIdAsync(long id)
+        {
+            return await dataContext.Employees.FindAsync(id);
+        }
+
         public void SaveEmployee(Employee e)
         {
             dataContext.Update(e);

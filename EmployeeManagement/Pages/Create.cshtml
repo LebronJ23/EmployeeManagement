@@ -8,7 +8,7 @@
 @functions {
     public class CreateModel : BaseManagementPageModel
     {
-        public CreateModel(DataContext dataContext) : base(dataContext)
+        public CreateModel(IDataRepository repo) : base(repo)
         {
 
         }
@@ -29,8 +29,7 @@
                 employee.Id = default;
                 employee.Department = default;
 
-                Context.Employees.Add(employee);
-                await Context.SaveChangesAsync();
+                await Repository.CreateEmployeeAsync(employee);
 
                 return RedirectToPage(nameof(Index));
             }

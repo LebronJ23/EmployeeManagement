@@ -9,7 +9,7 @@
 @functions {
     public class EditModel : BaseManagementPageModel
     {
-        public EditModel(DataContext context) : base(context)
+        public EditModel(IDataRepository repo) : base(repo)
         {
 
         }
@@ -18,7 +18,8 @@
         {
             Employee employee = TempData.ContainsKey("employee")
                 ? JsonSerializer.Deserialize<Employee>(TempData["employee"] as string)
-                : await Context.Employees.FindAsync(id);
+                : await Repository.FindEmployeeByIdAsync(id);
+
             ViewModel = EmployeeViewModelFactory.Edit(employee, Departments);
         }
 
@@ -28,8 +29,7 @@
             {
                 employee.Department = default;
 
-                Context.Employees.Update(employee);
-                await Context.SaveChangesAsync();
+                await Repository.SaveEmployeeAsync(employee);
 
                 return RedirectToPage(nameof(Index));
             }

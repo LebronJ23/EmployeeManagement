@@ -9,14 +9,14 @@
 @functions {
     public class DetailsModel : BaseManagementPageModel
     {
-        public DetailsModel(DataContext context) : base(context)
+        public DetailsModel(IDataRepository repo) : base(repo)
         {
 
         }
 
         public async Task OnGetAsync(long id)
         {
-            Employee employee = await Context.Employees.Include(e => e.Department).FirstOrDefaultAsync(e => e.Id == id);
+            Employee employee = await Repository.Employees.Include(e => e.Department).FirstOrDefaultAsync(e => e.Id == id);
             ViewModel = EmployeeViewModelFactory.Details(employee);
         }
     }
