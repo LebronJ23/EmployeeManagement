@@ -2,16 +2,17 @@
 using EmployeeManagement.Models.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace EmployeeManagement.Controllers
 {
-    public class DepartmentController : Controller
+    public class DepartmentsController : Controller
     {
         public DataContext dataContext;
 
-        public DepartmentController(DataContext ctx)
+        public DepartmentsController(DataContext ctx)
         {
             dataContext = ctx;
         }
@@ -19,24 +20,27 @@ namespace EmployeeManagement.Controllers
         private string Serialize(Employee e) => JsonSerializer.Serialize(e);
         private Employee Deserialize(string json) => JsonSerializer.Deserialize<Employee>(json);
 
-        public IActionResult Create([FromQuery(Name = "Employee")] Employee employee, string returnAction)
+        public IActionResult Create([FromQuery(Name = "Employee")] Employee employee,
+            string returnAction, string returnController = "Home")
         {
             var employeeId = employee.Id.ToString();
 
             TempData["employee"] = Serialize(employee);
             TempData["returnAction"] = returnAction;
+            TempData["returnController"] = returnController;
             TempData["employeeId"] = employeeId;
 
             return View(new DepartmentViewCreateModel 
             { 
                 Department = new Department(), 
                 EmployeeId = employeeId, 
-                ReturnPage = returnAction
+                ReturnAction = returnAction,
+                ReturnController = returnController
             });
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create([FromBody] Department department)
+        public async Task<IActionResult> Create([FromForm] Department department)
         {
             dataContext.Departments.Add(department);
             await dataContext.SaveChangesAsync();
@@ -48,11 +52,11 @@ namespace EmployeeManagement.Controllers
 
             return RedirectToAction(
                 TempData["returnAction"] as string,
+                TempData["returnController"] as string,
                 new { id = TempData["employeeId"] as string }
             );
         }
 
-        
         public IActionResult Index()
         {
             return View(dataContext.Departments.Include(d => d.Employees));
@@ -75,6 +79,25 @@ namespace EmployeeManagement.Controllers
 
             await dataContext.SaveChangesAsync();
             return RedirectToAction("Edit", new { id = departmentId });
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Delete(long departmentId)
+        {
+            Department department = await dataContext.Departments.FindAsync(departmentId);
+            dataContext.Remove(department);
+
+            await dataContext.SaveChangesAsync();
+            return RedirectToAction("Index");
+        }
+
+        public static string GetStaff(Department department)
+        {
+            var employees = department.Employees.ToList();
+            string result = employees.Count == 0
+                ? "No staff"
+                : string.Join(", ", employees.Take(3).Select(e => e.FirstName).ToArray());
+            return employees.Count > 3 ? $"{result} ..." : result;
         }
     }
 }

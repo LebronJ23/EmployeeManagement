@@ -1,0 +1,26 @@
+﻿@model DepartmentViewCreateModel
+
+<div class="m-2">
+    <h5 class="bg-secondary text-white text-center p-2">Create New Department</h5>
+
+    <form asp-action="Create" method="post">
+        <div class="form-group">
+            <label asp-for="Department.Name"></label>
+            <input class="form-control" asp-for="Department.Name" />
+        </div>
+
+        <div class="form-group">
+            <label asp-for="Department.City"></label>
+            <input class="form-control" asp-for="Department.City" />
+        </div>
+
+        <button class="btn btn-primary" type="submit">Create</button>
+        <a class="btn btn-outline-primary" 
+        asp-controller="@Model.ReturnController" 
+        asp-action="@Model.ReturnAction" 
+        asp-route-id="@Model.EmployeeId">
+            Cancel
+        </a>
+    </form>
+
+</div>

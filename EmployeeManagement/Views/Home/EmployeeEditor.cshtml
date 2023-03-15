@@ -50,8 +50,12 @@
             Department
             @if (!Model.ReadOnly)
             {
-                <input type="hidden" name="returnPage" value="@Model.Action" />
-                <button class="btn btn-sm btn-outline-primary ml-3" asp-page="/DepartmentCreateView" formmethod="get" formnovalidate>
+                <input type="hidden" name="returnAction" value="@Model.Action" />
+                <button class="btn btn-sm btn-outline-primary ml-3" 
+                asp-controller="Departments" 
+                asp-action="Create"
+                asp-route-returnController="Home"
+                formmethod="get" formnovalidate>
                     Create New Department
                 </button>
             }

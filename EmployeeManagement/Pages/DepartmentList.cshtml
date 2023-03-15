@@ -77,5 +77,13 @@
             Departments = dataContext.Departments.Include(d => d.Employees);
         }
 
+        public async Task<IActionResult> OnPostAsync(long id)
+        {
+            var department = dataContext.Departments.FirstOrDefault(d => d.Id == id);
+            dataContext.Departments.Remove(department);
+            await dataContext.SaveChangesAsync();
+            return RedirectToPage();
+        }
+
     }
 }
