@@ -74,7 +74,7 @@ namespace EmployeeManagement.Models.Infrastructure.Repositories
 
         public async Task<Department> FindDepartmentByIdAsync(long id, CancellationToken cancellationToken = default)
         {
-            return await dataContext.Departments.FindAsync(id, cancellationToken);
+            return await dataContext.Departments.Include(d => d.Employees).FirstOrDefaultAsync(d => d.Id == id, cancellationToken);
         }
 
         public Employee FindEmployeeById(long id)
@@ -84,7 +84,7 @@ namespace EmployeeManagement.Models.Infrastructure.Repositories
 
         public async Task<Employee> FindEmployeeByIdAsync(long id, CancellationToken cancellationToken = default)
         {
-            return await dataContext.Employees.FindAsync(id, cancellationToken);
+            return await dataContext.Employees.FindAsync(new object[] { id }, cancellationToken);
         }
 
         public void SaveDepartment(Department d)
