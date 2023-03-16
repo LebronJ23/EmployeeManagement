@@ -13,7 +13,7 @@
             </tr>
         </thead>
         <tbody>
-            @if (Model.Staff.Count() == 0)
+            @if (!Model.Staff.Any())
             {
                 <tr><td colspan="3" class="text-center">No staff</td></tr>
             }
@@ -44,7 +44,7 @@
             </tr>
         </thead>
         <tbody>
-            @if (Model.NotStaff.Count() == 0)
+            @if (!Model.NotStaff.Any())
             {
                 <tr><td colspan="3" class="text-center">No staff</td></tr>
             }

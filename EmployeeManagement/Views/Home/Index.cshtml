@@ -1,4 +1,4 @@
-﻿@model IEnumerable<Employee>
+﻿@model ConfiguredCancelableAsyncEnumerable<Employee>
 
 <div class="m-2">
     <h4 class="bg-primary text-white text-center p-2">Employees</h4>
@@ -16,7 +16,7 @@
             </tr>
         </thead>
         <tbody>
-            @foreach (Employee employee in Model)
+            @await foreach (Employee employee in Model)
             {
                 <tr>
                     <td>@employee.Id</td>

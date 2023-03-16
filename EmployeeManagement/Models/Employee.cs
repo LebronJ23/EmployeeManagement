@@ -9,14 +9,17 @@ namespace EmployeeManagement.Models
         public long Id { get; set; }
 
         [Required]
+        [StringLength(30, MinimumLength = 2)]
         [Index("IX_Initials", Order = 1, IsUnique = true)]
         public string FirstName { get; set; }
 
         [Required]
+        [StringLength(30, MinimumLength = 2)]
         [Index("IX_Initials", Order = 2, IsUnique = true)]
         public string LastName { get; set; }
 
         [Required]
+        [StringLength(30, MinimumLength = 2)]
         [Index("IX_Initials", Order = 3, IsUnique = true)]
         public string Surname { get; set; }
 

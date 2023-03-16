@@ -9,7 +9,7 @@ namespace EmployeeManagement.Models
         public static void SeedDatabase(DataContext context)
         {
             context.Database.Migrate();
-            if (context.Employees.Count() == 0 && context.Departments.Count() == 0)
+            if (!(context.Employees.Any() || context.Departments.Any()))
             {
 
                 Department d1 = new Department { Name = "Front-end", City = "Moscow" };

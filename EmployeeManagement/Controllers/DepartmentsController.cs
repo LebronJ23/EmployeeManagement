@@ -1,20 +1,27 @@
 ﻿using EmployeeManagement.Models;
+using EmployeeManagement.Models.Infrastructure.Interfaces.Services;
 using EmployeeManagement.Models.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace EmployeeManagement.Controllers
 {
     public class DepartmentsController : Controller
     {
-        public DataContext dataContext;
+        public IDepartmentService departmentService;
+        public IEmployeeService employeeService;
 
-        public DepartmentsController(DataContext ctx)
+        private IEnumerable<Employee> Employees => employeeService.GetEmployees;
+
+        public DepartmentsController(IDepartmentService dService, IEmployeeService eService)
         {
-            dataContext = ctx;
+            departmentService = dService;
+            employeeService = eService;
         }
 
         private string Serialize(Employee e) => JsonSerializer.Serialize(e);
@@ -42,10 +49,9 @@ namespace EmployeeManagement.Controllers
         [HttpPost]
         public async Task<IActionResult> Create([FromForm] Department department)
         {
-            dataContext.Departments.Add(department);
-            await dataContext.SaveChangesAsync();
+            await departmentService.AddDepartmentAsync(department);
 
-            Employee employee = Deserialize(TempData["employee"] as string);
+            var employee = Deserialize(TempData["employee"] as string);
             employee.DepartmentId = department.Id;
 
             TempData["employee"] = Serialize(employee);
@@ -57,44 +63,38 @@ namespace EmployeeManagement.Controllers
             );
         }
 
-        public IActionResult Index()
+        public IActionResult Index(CancellationToken cancellationToken)
         {
-            return View(dataContext.Departments.Include(d => d.Employees));
+            return View(departmentService.GetDepartmentsListAsync(cancellationToken));
         }
 
-        public async Task<IActionResult> Edit(long id)
+        public async Task<IActionResult> Edit(long id, CancellationToken cancellationToken)
         {
             return View(new DepartmentViewEditModel
             {
-                Department = await dataContext.Departments.Include(d => d.Employees).FirstOrDefaultAsync(d => d.Id == id),
-                Employees = dataContext.Employees
+                Department = await departmentService.GetDepartmentAsync(id, cancellationToken),
+                Employees = Employees
             });
         }
 
         [HttpPost]
         public async Task<IActionResult> Edit(long employeeId, long departmentId)
         {
-            Employee employee = await dataContext.Employees.FindAsync(employeeId);
-            employee.DepartmentId = departmentId;
-
-            await dataContext.SaveChangesAsync();
+            await employeeService.SetDepartmentAsync(employeeId, departmentId);
             return RedirectToAction("Edit", new { id = departmentId });
         }
 
         [HttpPost]
         public async Task<IActionResult> Delete(long departmentId)
         {
-            Department department = await dataContext.Departments.FindAsync(departmentId);
-            dataContext.Remove(department);
-
-            await dataContext.SaveChangesAsync();
+            await departmentService.DeleteDepartmentAsync(departmentId);
             return RedirectToAction("Index");
         }
 
         public static string GetStaff(Department department)
         {
             var employees = department.Employees.ToList();
-            string result = employees.Count == 0
+            var result = employees.Any()
                 ? "No staff"
                 : string.Join(", ", employees.Take(3).Select(e => e.FirstName).ToArray());
             return employees.Count > 3 ? $"{result} ..." : result;

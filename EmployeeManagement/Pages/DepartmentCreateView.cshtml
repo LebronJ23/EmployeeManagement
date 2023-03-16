@@ -52,7 +52,7 @@
             Context.Departments.Add(Department);
             await Context.SaveChangesAsync();
 
-            Employee employee = Deserialize(TempData["employee"] as string);
+            var employee = Deserialize(TempData["employee"] as string);
             employee.DepartmentId = Department.Id;
 
             TempData["employee"] = Serialize(employee);

@@ -7,29 +7,32 @@ using System.Linq;
 using System.Threading.Tasks;
 using EmployeeManagement.Models.Infrastructure.Factories;
 using System.Text.Json;
+using System.Threading;
+using EmployeeManagement.Models.Infrastructure.Interfaces.Services;
 
 namespace EmployeeManagement.Controllers
 {
     public class HomeController : Controller
     {
-        private IDataRepository repository;
+        private IEmployeeService employeeService;
+        private IDepartmentService departmentService;
 
-        private IEnumerable<Department> Departments => repository.Departments;
-        private IEnumerable<Employee> Employees => repository.Employees;
+        private IEnumerable<Department> Departments => departmentService.GetDepartments;
 
-        public HomeController(IDataRepository repo)
+        public HomeController(IEmployeeService eService, IDepartmentService dService)
         {
-            repository = repo;
+            employeeService = eService;
+            departmentService = dService;
         }
 
-        public IActionResult Index()
+        public IActionResult Index(CancellationToken cancellationToken)
         {
-            return View(repository.Employees);
+            return View(employeeService.GetEmployeeListAsync(cancellationToken));
         }
 
         public IActionResult Create()
         {
-            Employee employee = TempData.ContainsKey("employee")
+            var employee = TempData.ContainsKey("employee")
                 ? JsonSerializer.Deserialize<Employee>(TempData["employee"] as string)
                 : new Employee();
 
@@ -41,10 +44,7 @@ namespace EmployeeManagement.Controllers
         {
             if (ModelState.IsValid)
             {
-                employee.Id = default;
-                employee.Department = default;
-
-                await repository.CreateEmployeeAsync(employee);
+                await employeeService.AddEmployeeAsync(employee);
 
                 return RedirectToAction("Index");
             }
@@ -52,18 +52,18 @@ namespace EmployeeManagement.Controllers
             return View("EmployeeEditor", EmployeeViewModelFactory.Create(employee, Departments));
         }
 
-        public async Task<IActionResult> Details(long id)
+        public async Task<IActionResult> Details(long id, CancellationToken cancellationToken)
         {
-            Employee employee = await repository.FindEmployeeByIdAsync(id);
+            var employee = await employeeService.GetEmployeeAsync(id, cancellationToken);
 
             return View("EmployeeEditor", EmployeeViewModelFactory.Details(employee));
         }
 
-        public async Task<IActionResult> Edit(long id)
+        public async Task<IActionResult> Edit(long id, CancellationToken cancellationToken)
         {
-            Employee employee = TempData.ContainsKey("employee")
+            var employee = TempData.ContainsKey("employee")
                 ? JsonSerializer.Deserialize<Employee>(TempData["employee"] as string)
-                : await repository.FindEmployeeByIdAsync(id);
+                : await employeeService.GetEmployeeAsync(id, cancellationToken);
 
             return View("EmployeeEditor", EmployeeViewModelFactory.Edit(employee, Departments));
         }
@@ -73,9 +73,7 @@ namespace EmployeeManagement.Controllers
         {
             if (ModelState.IsValid)
             {
-                employee.Department = default;
-
-                await repository.SaveEmployeeAsync(employee);
+                await employeeService.UpdateEmployeeAsync(employee);
 
                 return RedirectToAction("Index");
             }
@@ -83,16 +81,16 @@ namespace EmployeeManagement.Controllers
             return View("EmployeeEditor", EmployeeViewModelFactory.Edit(employee, Departments));
         }
 
-        public async Task<IActionResult> Delete(long id)
+        public async Task<IActionResult> Delete(long id, CancellationToken cancellationToken)
         {
-            Employee employee = await repository.FindEmployeeByIdAsync(id);
+            var employee = await employeeService.GetEmployeeAsync(id, cancellationToken);
             return View("EmployeeEditor", EmployeeViewModelFactory.Delete(employee, Departments));
         }
 
         [HttpPost]
         public async Task<IActionResult> Delete([FromForm] Employee employee)
         {
-            await repository.DeleteEmployeeAsync(employee);
+            await employeeService.DeleteEmployeeAsync(employee);
             return RedirectToAction("Index");
         }
     }

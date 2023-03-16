@@ -16,7 +16,7 @@
 
         public async Task OnGetAsync(long id)
         {
-            Employee employee = TempData.ContainsKey("employee")
+            var employee = TempData.ContainsKey("employee")
                 ? JsonSerializer.Deserialize<Employee>(TempData["employee"] as string)
                 : await Repository.FindEmployeeByIdAsync(id);
 

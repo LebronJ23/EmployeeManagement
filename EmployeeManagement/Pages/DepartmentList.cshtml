@@ -14,7 +14,7 @@
             </tr>
         </thead>
         <tbody>
-            @if (Model.Departments.Count() == 0)
+            @if (!Model.Departments.Any())
             {
                 <tr>
                     <td colspan="4" class="text-center">
@@ -66,7 +66,7 @@
         public string GetStaff(Department department)
         {
             var employees = department.Employees.ToList();
-            string result = employees.Count == 0
+            var result = employees.Any()
                 ? "No staff" 
                 : string.Join(", ", employees.Take(3).Select(e => e.FirstName).ToArray());
             return employees.Count > 3 ? $"{ result } ..." : result;

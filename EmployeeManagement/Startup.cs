@@ -1,6 +1,9 @@
+using EmployeeManagement.Filters;
 using EmployeeManagement.Models;
 using EmployeeManagement.Models.Infrastructure.Interfaces;
+using EmployeeManagement.Models.Infrastructure.Interfaces.Services;
 using EmployeeManagement.Models.Infrastructure.Repositories;
+using EmployeeManagement.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -34,7 +37,12 @@ namespace EmployeeManagement
                 opts.EnableSensitiveDataLogging(true);
             });
             services.AddScoped<IDataRepository, DataRepository>();
-            services.AddControllersWithViews().AddRazorRuntimeCompilation();
+            services.AddScoped<IEmployeeService, EmployeeService>();
+            services.AddScoped<IDepartmentService, DepartmentService>();
+            services.AddControllersWithViews(options =>
+            {
+                options.Filters.Add<OperationCancelledExceptionFilter>();
+            }).AddRazorRuntimeCompilation();
             services.AddRazorPages().AddRazorRuntimeCompilation();
         }
 
@@ -55,7 +63,7 @@ namespace EmployeeManagement
                 endpoints.MapRazorPages();
             });
 
-            SeedData.SeedDatabase(context);
+            //SeedData.SeedDatabase(context);
         }
     }
 }

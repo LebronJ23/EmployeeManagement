@@ -15,7 +15,7 @@
 
         public void OnGet()
         {
-            Employee employee = TempData.ContainsKey("employee")
+            var employee = TempData.ContainsKey("employee")
                 ? JsonSerializer.Deserialize<Employee>(TempData["employee"] as string)
                 : new Employee();
 

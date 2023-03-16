@@ -16,7 +16,7 @@
             </tr>
         </thead>
         <tbody>
-            @if (Model.Staff.Count() == 0)
+            @if (!Model.Staff.Any())
             {
                 <tr><td colspan="3" class="text-center">No staff</td></tr>
             }
@@ -47,7 +47,7 @@
             </tr>
         </thead>
         <tbody>
-            @if (Model.NotStaff.Count() == 0)
+            @if (!Model.NotStaff.Any())
             {
                 <tr><td colspan="3" class="text-center">No staff</td></tr>
             }
@@ -93,7 +93,7 @@
 
         public async Task<IActionResult> OnPostAsync(long employeeId, long departmentId)
         {
-            Employee employee = await dataContext.Employees.FindAsync(employeeId);
+            var employee = await dataContext.Employees.FindAsync(employeeId);
             employee.DepartmentId = departmentId;
 
             await dataContext.SaveChangesAsync();
