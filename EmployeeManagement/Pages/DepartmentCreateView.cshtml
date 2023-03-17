@@ -34,12 +34,25 @@
             Context = dbContext;
         }
 
+        /// <summary>
+        /// Отдел
+        /// </summary>
         [BindProperty]
         public Department Department { get; set; }
 
+        /// <summary>
+        /// Страница возврата
+        /// </summary>
         public string ReturnPage { get; set; }
+
+        /// <summary>
+        /// Идентификатор сотрудника
+        /// </summary>
         public string EmployeeId { get; set; }
 
+        /// <summary>
+        /// Обработчик GET метода страницы
+        /// </summary>
         public void OnGet([FromQuery(Name = "Employee")] Employee employee, string returnPage)
         {
             TempData["employee"] = Serialize(employee);
@@ -47,6 +60,9 @@
             TempData["employeeId"] = EmployeeId = employee.Id.ToString();
         }
 
+        /// <summary>
+        /// Обработчик POST метода страницы
+        /// </summary>
         public async Task<IActionResult> OnPostAsync()
         {
             Context.Departments.Add(Department);

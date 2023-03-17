@@ -11,11 +11,18 @@ using System.Threading.Tasks;
 
 namespace EmployeeManagement.Controllers
 {
+    /// <summary>
+    /// Контроллер отделов
+    /// </summary>
     public class DepartmentsController : Controller
     {
+        // Сервис по работе с отделами
         public IDepartmentService departmentService;
+
+        // Сервис по работе с сотрудниками
         public IEmployeeService employeeService;
 
+        // Все сотрудники
         private IEnumerable<Employee> Employees => employeeService.GetEmployees;
 
         public DepartmentsController(IDepartmentService dService, IEmployeeService eService)
@@ -27,11 +34,20 @@ namespace EmployeeManagement.Controllers
         private string Serialize(Employee e) => JsonSerializer.Serialize(e);
         private Employee Deserialize(string json) => JsonSerializer.Deserialize<Employee>(json);
 
+        /// <summary>
+        /// Создание отдела
+        /// </summary>
+        /// <param name="employee">Сотрудник, для которого создается новый отдел</param>
+        /// <param name="returnAction">Метод действия, с которого происходит вызов создания отдела</param>
+        /// <param name="returnController">Котроллен действия, с которого происходит вызов создания отдела</param>
+        /// <returns></returns>
         public IActionResult Create([FromQuery(Name = "Employee")] Employee employee,
             string returnAction, string returnController = "Home")
         {
             var employeeId = employee.Id.ToString();
 
+            // Сериализация сотрудника для восстановления данных о нем и возврата в исходную точку
+            // после создания нового отдела
             TempData["employee"] = Serialize(employee);
             TempData["returnAction"] = returnAction;
             TempData["returnController"] = returnController;
@@ -46,16 +62,23 @@ namespace EmployeeManagement.Controllers
             });
         }
 
+        /// <summary>
+        /// Создание отдела
+        /// </summary>
+        /// <param name="department">отдел для создания</param>
+        /// <returns></returns>
         [HttpPost]
         public async Task<IActionResult> Create([FromForm] Department department)
         {
             await departmentService.AddDepartmentAsync(department);
 
+            // Установка нового департамента сотруднику
             var employee = Deserialize(TempData["employee"] as string);
             employee.DepartmentId = department.Id;
 
             TempData["employee"] = Serialize(employee);
 
+            // Возврат в точку, из которой произошел вызов создания отдела
             return RedirectToAction(
                 TempData["returnAction"] as string,
                 TempData["returnController"] as string,
@@ -63,11 +86,22 @@ namespace EmployeeManagement.Controllers
             );
         }
 
+        /// <summary>
+        /// Отображение списка отделов
+        /// </summary>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
         public IActionResult Index(CancellationToken cancellationToken)
         {
             return View(departmentService.GetDepartmentsListAsync(cancellationToken));
         }
 
+        /// <summary>
+        /// Редактирование отдела
+        /// </summary>
+        /// <param name="id">Идентификатор отдела</param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
         public async Task<IActionResult> Edit(long id, CancellationToken cancellationToken)
         {
             return View(new DepartmentViewEditModel
@@ -77,6 +111,13 @@ namespace EmployeeManagement.Controllers
             });
         }
 
+        /// <summary>
+        /// Редактирование отдела
+        /// Перенос сотрудника в текущий отдел
+        /// </summary>
+        /// <param name="employeeId">Идентификатор сотрудника</param>
+        /// <param name="departmentId">Идентификатор отдела</param>
+        /// <returns></returns>
         [HttpPost]
         public async Task<IActionResult> Edit(long employeeId, long departmentId)
         {
@@ -84,6 +125,11 @@ namespace EmployeeManagement.Controllers
             return RedirectToAction("Edit", new { id = departmentId });
         }
 
+        /// <summary>
+        /// Удаление отдела
+        /// </summary>
+        /// <param name="departmentId">Идентификатор отдела</param>
+        /// <returns></returns>
         [HttpPost]
         public async Task<IActionResult> Delete(long departmentId)
         {
@@ -91,6 +137,11 @@ namespace EmployeeManagement.Controllers
             return RedirectToAction("Index");
         }
 
+        /// <summary>
+        /// Получение списка сотрудников отдела в виде строки
+        /// </summary>
+        /// <param name="department"></param>
+        /// <returns></returns>
         public static string GetStaff(Department department)
         {
             var employees = department.Employees.ToList();

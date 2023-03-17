@@ -31,16 +31,24 @@ namespace EmployeeManagement
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
+            // Добавление контекста
             services.AddDbContext<DataContext>(opts =>
             {
                 opts.UseSqlServer(Configuration["ConnectionStrings:EmployeeConnection"]);
                 opts.EnableSensitiveDataLogging(true);
             });
+
+            // Регистрация репозитория
             services.AddScoped<IDataRepository, DataRepository>();
+
+            // Регистрация сервисов
             services.AddScoped<IEmployeeService, EmployeeService>();
             services.AddScoped<IDepartmentService, DepartmentService>();
+
+            // Добавление контроллеров с представлениями и страниц Razor
             services.AddControllersWithViews(options =>
             {
+                // Добавление фильтра обрабатывающего OperationCancelledException
                 options.Filters.Add<OperationCancelledExceptionFilter>();
             }).AddRazorRuntimeCompilation();
             services.AddRazorPages().AddRazorRuntimeCompilation();
@@ -63,7 +71,8 @@ namespace EmployeeManagement
                 endpoints.MapRazorPages();
             });
 
-            //SeedData.SeedDatabase(context);
+            // // Заполнение начальными данными можно также вызывать здесь
+            // SeedData.SeedDatabase(context);
         }
     }
 }

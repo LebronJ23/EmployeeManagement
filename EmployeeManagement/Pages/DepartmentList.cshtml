@@ -56,6 +56,9 @@
     {
         public DataContext dataContext;
 
+        /// <summary>
+        /// Список отделов
+        /// </summary>
         public IEnumerable<Department> Departments;
 
         public DepartmentListModel(DataContext ctx)
@@ -63,6 +66,11 @@
             dataContext = ctx;
         }
 
+        /// <summary>
+        /// Получение списка сотрудников отдела в виде строки
+        /// </summary>
+        /// <param name="department">Отдел</param>
+        /// <returns></returns>
         public string GetStaff(Department department)
         {
             var employees = department.Employees.ToList();
@@ -72,11 +80,17 @@
             return employees.Count > 3 ? $"{ result } ..." : result;
         }
 
+        /// <summary>
+        /// Обработчик GET метода страницы
+        /// </summary>
         public void OnGetAsync()
         {
             Departments = dataContext.Departments.Include(d => d.Employees);
         }
 
+        /// <summary>
+        /// Обработчик POST метода страницы
+        /// </summary>
         public async Task<IActionResult> OnPostAsync(long id)
         {
             var department = dataContext.Departments.FirstOrDefault(d => d.Id == id);

@@ -4,6 +4,9 @@ using System.Linq;
 
 namespace EmployeeManagement.Models
 {
+    /// <summary>
+    /// класс для заполнения базы начальными данными через миграции
+    /// </summary>
     public static class SeedData
     {
         public static void SeedDatabase(DataContext context)

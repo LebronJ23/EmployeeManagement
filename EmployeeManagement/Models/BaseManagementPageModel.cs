@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 
 namespace EmployeeManagement.Models
 {
+    /// <summary>
+    /// Базовый класс для страниц управления сотрудниками
+    /// </summary>
     public class BaseManagementPageModel : PageModel
     {
         public IDataRepository Repository { get; set; }
@@ -14,8 +17,14 @@ namespace EmployeeManagement.Models
             Repository = repo;
         }
 
+        /// <summary>
+        /// Отделы
+        /// </summary>
         public IEnumerable<Department> Departments => Repository.Departments;
 
+        /// <summary>
+        /// Модель страницы
+        /// </summary>
         public EmployeeViewModel ViewModel { get; set; }
     }
 }

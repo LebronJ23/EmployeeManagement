@@ -82,15 +82,32 @@
 
         public Department Department { get; set; }
 
+        /// <summary>
+        /// Обработчик GET метода страницы
+        /// </summary>
         public async Task OnGetAsync(long id)
         {
             Department = await dataContext.Departments.Include(d => d.Employees).FirstOrDefaultAsync(d => d.Id == id);
         }
 
+        /// <summary>
+        /// Все сотдруники
+        /// </summary>
         public IEnumerable<Employee> Employees => dataContext.Employees.ToList();
+
+        /// <summary>
+        /// Сотрудники, относящиеся к текущему отделу
+        /// </summary>
         public IEnumerable<Employee> Staff => Department.Employees;
+
+        /// <summary>
+        /// Сотрудники, НЕ относящиеся к текущему отделу
+        /// </summary>
         public IEnumerable<Employee> NotStaff => Employees.Except(Staff);
 
+        /// <summary>
+        /// Обработчик POST метода страницы
+        /// </summary>
         public async Task<IActionResult> OnPostAsync(long employeeId, long departmentId)
         {
             var employee = await dataContext.Employees.FindAsync(employeeId);

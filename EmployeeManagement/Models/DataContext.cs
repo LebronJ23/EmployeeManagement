@@ -3,6 +3,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace EmployeeManagement.Models
 {
+    /// <summary>
+    /// Контекст данных
+    /// </summary>
     public class DataContext : DbContext
     {
         public DbSet<Employee> Employees { get; set; }
@@ -15,6 +18,7 @@ namespace EmployeeManagement.Models
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            // Заполнение базы начальными данными
             modelBuilder.SeedData();
         }
     }

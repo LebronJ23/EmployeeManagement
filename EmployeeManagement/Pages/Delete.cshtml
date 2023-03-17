@@ -14,12 +14,18 @@
 
         }
 
+        /// <summary>
+        /// Обработчик GET метода страницы
+        /// </summary>
         public async Task OnGetAsync(long id)
         {
             var employee = await Repository.Employees.FirstOrDefaultAsync(e => e.Id == id);
             ViewModel = EmployeeViewModelFactory.Delete(employee, Departments);
         }
 
+        /// <summary>
+        /// Обработчик POST метода страницы
+        /// </summary>
         public async Task<IActionResult> OnPostAsync([FromForm] Employee employee)
         {
             await Repository.DeleteEmployeeAsync(employee);

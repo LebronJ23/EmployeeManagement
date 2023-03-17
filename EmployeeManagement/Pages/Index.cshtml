@@ -53,6 +53,10 @@
 
         public IEnumerable<Employee> Employees { get; set; }
 
+        /// <summary>
+        /// Обработчик GET метода страницы
+        /// </summary>
+        /// <param name="id"></param>
         public void OnGetAsync(long id = 1)
         {
             Employees = repository.Employees;

@@ -13,6 +13,9 @@
 
         }
 
+        /// <summary>
+        /// Обработчик GET метода страницы
+        /// </summary>
         public void OnGet()
         {
             var employee = TempData.ContainsKey("employee")
@@ -22,6 +25,9 @@
             ViewModel = EmployeeViewModelFactory.Create(employee, Departments);
         }
 
+        /// <summary>
+        /// Обработчик POST метода страницы
+        /// </summary>
         public async Task<IActionResult> OnPostAsync([FromForm] Employee employee)
         {
             if (ModelState.IsValid)

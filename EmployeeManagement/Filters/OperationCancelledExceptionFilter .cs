@@ -1,10 +1,12 @@
 ﻿using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 using System;
 
 namespace EmployeeManagement.Filters
 {
+    /// <summary>
+    /// Фильтр обрабатывающий OperationCanceledException
+    /// </summary>
     public class OperationCancelledExceptionFilter : ExceptionFilterAttribute
     {
         public OperationCancelledExceptionFilter()

@@ -4,8 +4,17 @@ using System.Linq;
 
 namespace EmployeeManagement.Models.Infrastructure.Factories
 {
+    /// <summary>
+    /// Фабрика по созданию моделей представления для сотрудников
+    /// </summary>
     public static class EmployeeViewModelFactory
     {
+        /// <summary>
+        /// Модель представления создания сотрудника
+        /// </summary>
+        /// <param name="e">Сотрудник</param>
+        /// <param name="departments">Список отделов</param>
+        /// <returns></returns>
         public static EmployeeViewModel Create(Employee e, IEnumerable<Department> departments)
         {
             return new EmployeeViewModel
@@ -15,6 +24,11 @@ namespace EmployeeManagement.Models.Infrastructure.Factories
             };
         }
 
+        /// <summary>
+        /// Модель представления детальной информации по сотруднику
+        /// </summary>
+        /// <param name="e">Сотрудник</param>
+        /// <returns></returns>
         public static EmployeeViewModel Details(Employee e)
         {
             return new EmployeeViewModel 
@@ -28,6 +42,12 @@ namespace EmployeeManagement.Models.Infrastructure.Factories
             };
         }
 
+        /// <summary>
+        /// Модель представления редактирования сотрудника
+        /// </summary>
+        /// <param name="e">Сотрудник</param>
+        /// <param name="departments">Список отделов</param>
+        /// <returns></returns>
         public static EmployeeViewModel Edit(Employee e, IEnumerable<Department> departments)
         {
             return new EmployeeViewModel
@@ -39,6 +59,12 @@ namespace EmployeeManagement.Models.Infrastructure.Factories
             };
         }
 
+        /// <summary>
+        /// Модель представления удаления сотрудника
+        /// </summary>
+        /// <param name="e">Сотрудник</param>
+        /// <param name="departments">Список отделов</param>
+        /// <returns></returns>
         public static EmployeeViewModel Delete(Employee e, IEnumerable<Department> departments)
         {
             return new EmployeeViewModel

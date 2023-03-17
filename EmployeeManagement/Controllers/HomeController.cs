@@ -12,11 +12,18 @@ using EmployeeManagement.Models.Infrastructure.Interfaces.Services;
 
 namespace EmployeeManagement.Controllers
 {
+    /// <summary>
+    /// Контроллер сотрудников
+    /// </summary>
     public class HomeController : Controller
     {
+        // Сервис по работе с сотрудниками
         private IEmployeeService employeeService;
+
+        // Сервис по работе с отделами
         private IDepartmentService departmentService;
 
+        // Все отделы
         private IEnumerable<Department> Departments => departmentService.GetDepartments;
 
         public HomeController(IEmployeeService eService, IDepartmentService dService)
@@ -25,11 +32,22 @@ namespace EmployeeManagement.Controllers
             departmentService = dService;
         }
 
+        /// <summary>
+        /// Отображение списка сотрудников
+        /// </summary>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
         public IActionResult Index(CancellationToken cancellationToken)
         {
             return View(employeeService.GetEmployeeListAsync(cancellationToken));
         }
 
+        /// <summary>
+        /// Создание сотрудника
+        /// При создании сотрудника и последующем переходе на создание отдела, необходимо выполнить десереализацию
+        /// заполненных ранее данных для их восстановления, вместо того, чтобы опять обнулять поля
+        /// </summary>
+        /// <returns></returns>
         public IActionResult Create()
         {
             var employee = TempData.ContainsKey("employee")
@@ -39,6 +57,11 @@ namespace EmployeeManagement.Controllers
             return View("EmployeeEditor", EmployeeViewModelFactory.Create(employee, Departments));
         }
 
+        /// <summary>
+        /// Создание сотрудника
+        /// </summary>
+        /// <param name="employee">Сотрудник</param>
+        /// <returns></returns>
         [HttpPost]
         public async Task<IActionResult> Create([FromForm] Employee employee)
         {
@@ -52,6 +75,12 @@ namespace EmployeeManagement.Controllers
             return View("EmployeeEditor", EmployeeViewModelFactory.Create(employee, Departments));
         }
 
+        /// <summary>
+        /// Детальная информация по сотруднику
+        /// </summary>
+        /// <param name="id">Идентификатор сотрудника</param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
         public async Task<IActionResult> Details(long id, CancellationToken cancellationToken)
         {
             var employee = await employeeService.GetEmployeeAsync(id, cancellationToken);
@@ -59,6 +88,14 @@ namespace EmployeeManagement.Controllers
             return View("EmployeeEditor", EmployeeViewModelFactory.Details(employee));
         }
 
+        /// <summary>
+        /// Редактирование сотрудника
+        /// При создании нового отдела во время редактирования сотрудника производятся такие же действия
+        /// по сериализации/десереализации, как и при создании сотрудника
+        /// </summary>
+        /// <param name="id">Идентификатор сотрудника</param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
         public async Task<IActionResult> Edit(long id, CancellationToken cancellationToken)
         {
             var employee = TempData.ContainsKey("employee")
@@ -68,6 +105,11 @@ namespace EmployeeManagement.Controllers
             return View("EmployeeEditor", EmployeeViewModelFactory.Edit(employee, Departments));
         }
 
+        /// <summary>
+        /// Редактирование сотрудника
+        /// </summary>
+        /// <param name="employee"></param>
+        /// <returns></returns>
         [HttpPost]
         public async Task<IActionResult> Edit([FromForm] Employee employee)
         {
@@ -81,12 +123,23 @@ namespace EmployeeManagement.Controllers
             return View("EmployeeEditor", EmployeeViewModelFactory.Edit(employee, Departments));
         }
 
+        /// <summary>
+        /// Удаление сотрудника
+        /// </summary>
+        /// <param name="id">Идентификатор сотрудника</param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
         public async Task<IActionResult> Delete(long id, CancellationToken cancellationToken)
         {
             var employee = await employeeService.GetEmployeeAsync(id, cancellationToken);
             return View("EmployeeEditor", EmployeeViewModelFactory.Delete(employee, Departments));
         }
 
+        /// <summary>
+        /// Удаление сотрудника
+        /// </summary>
+        /// <param name="employee">Сотрудник</param>
+        /// <returns></returns>
         [HttpPost]
         public async Task<IActionResult> Delete([FromForm] Employee employee)
         {

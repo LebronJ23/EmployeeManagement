@@ -4,8 +4,15 @@ using System;
 
 namespace EmployeeManagement.Utils.Extensions
 {
+    /// <summary>
+    /// Класс методов расширения для ModelBuilder
+    /// </summary>
     public static class ModelBuilderExtensions
     {
+        /// <summary>
+        /// Метод расширения заполнения начальными данными базы
+        /// </summary>
+        /// <param name="modelBuilder"></param>
         public static void SeedData(this ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Department>().HasData(
