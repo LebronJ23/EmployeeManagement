@@ -37,9 +37,9 @@ namespace EmployeeManagement.Controllers
         /// </summary>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        public IActionResult Index(CancellationToken cancellationToken)
+        public async Task<IActionResult> Index(CancellationToken cancellationToken)
         {
-            return View(employeeService.GetEmployeeListAsync(cancellationToken));
+            return View(await employeeService.GetEmployeeListAsync(cancellationToken));
         }
 
         /// <summary>

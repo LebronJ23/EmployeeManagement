@@ -19,7 +19,6 @@ namespace EmployeeManagement.Models
         /// </summary>
         [Required]
         [StringLength(30, MinimumLength = 2)]
-        [Index("IX_Initials", Order = 1, IsUnique = true)]
         public string FirstName { get; set; }
 
         /// <summary>
@@ -27,7 +26,6 @@ namespace EmployeeManagement.Models
         /// </summary>
         [Required]
         [StringLength(30, MinimumLength = 2)]
-        [Index("IX_Initials", Order = 2, IsUnique = true)]
         public string LastName { get; set; }
 
         /// <summary>
@@ -35,7 +33,6 @@ namespace EmployeeManagement.Models
         /// </summary>
         [Required]
         [StringLength(30, MinimumLength = 2)]
-        [Index("IX_Initials", Order = 3, IsUnique = true)]
         public string Surname { get; set; }
 
         /// <summary>

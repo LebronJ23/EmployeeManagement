@@ -91,9 +91,9 @@ namespace EmployeeManagement.Controllers
         /// </summary>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        public IActionResult Index(CancellationToken cancellationToken)
+        public async Task<IActionResult> Index(CancellationToken cancellationToken)
         {
-            return View(departmentService.GetDepartmentsListAsync(cancellationToken));
+            return View(await departmentService.GetDepartmentsListAsync(cancellationToken));
         }
 
         /// <summary>
@@ -145,7 +145,7 @@ namespace EmployeeManagement.Controllers
         public static string GetStaff(Department department)
         {
             var employees = department.Employees.ToList();
-            var result = employees.Any()
+            var result = !employees.Any()
                 ? "No staff"
                 : string.Join(", ", employees.Take(3).Select(e => e.FirstName).ToArray());
             return employees.Count > 3 ? $"{result} ..." : result;

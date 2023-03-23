@@ -18,6 +18,10 @@ namespace EmployeeManagement.Models
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.Entity<Employee>()
+                .HasIndex(e => new { e.FirstName, e.LastName, e.Surname })
+                .IsUnique(true);
+
             // Заполнение базы начальными данными
             modelBuilder.SeedData();
         }

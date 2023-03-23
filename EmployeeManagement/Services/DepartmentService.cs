@@ -68,9 +68,9 @@ namespace EmployeeManagement.Services
         /// </summary>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        public ConfiguredCancelableAsyncEnumerable<Department> GetDepartmentsListAsync(CancellationToken cancellationToken)
+        public async Task<IEnumerable<Department>> GetDepartmentsListAsync(CancellationToken cancellationToken)
         {
-            return Repository.Departments.AsAsyncEnumerable().WithCancellation(cancellationToken);
+            return await Repository.Departments.ToListAsync(cancellationToken);
         }
 
         /// <summary>

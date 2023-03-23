@@ -1,5 +1,5 @@
 ﻿@using EmployeeManagement.Controllers
-@model ConfiguredCancelableAsyncEnumerable<Department>
+@model IEnumerable<Department>
 
 <div class="m-2">
     <h3 class="bg-primary text-white text-center p-2">Departments</h3>
@@ -14,7 +14,7 @@
             </tr>
         </thead>
         <tbody>
-            @await foreach (var department in Model)
+            @foreach (var department in Model)
             {
                 <tr>
                     <td>@department.Id</td>
